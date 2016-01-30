@@ -1,0 +1,58 @@
+===== Server Lijst | {{ inventory_hostname }} =====
+~~NOTOC~~
+
+<grid>
+<col sm="4">
+=== Server Omschrijving ===
+{% if server_description.content != '' %}
+{{ server_description.content | b64decode }}
+{% else %}
+  * ''Deze word gelezen vanaf de server zelf in /root/description.txt''
+{% endif %}
+</col>
+
+<col sm="8">
+=== Server Notities ===
+{% if server_notes.content != '' %}
+{{ server_description.notes | b64decode }}
+{% else %}
+  * ''Deze word gelezen vanaf de server zelf in /root/notes.txt''
+{% endif %}
+</col>
+</grid>
+
+<grid>
+<col sm="4">
+=== Hardware ===
+{% if ansible_virtualization_role != 'guest' %}
+| Hardware| {{ ansible_system_vendor }} {{ ansible_product_name }} ( {{ ansible_product_serial }} ) |
+| CPU | {{ ansible_processor_count }} CPU x {{ ansible_processor_cores }} Cores |
+{% else %}
+| Virtual| {{ ansible_virtualization_type }} {{ ansible_virtualization_role }} |
+| CPU | {{ ansible_processor_vcpus }} VPCU's |
+{% endif %}
+| RAM | {{ (ansible_memtotal_mb / 1024) | round(0) }} GB  ({{ ansible_memtotal_mb }} MB) |
+| SWAP | {{ (ansible_swaptotal_mb / 1024) | round(0) }} GB ({{ ansible_swaptotal_mb }} MB) |
+</col>
+
+<col sm="4">
+=== OS ===
+| OS | {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }} |
+| Kernel | {{ ansible_kernel }} |
+</col>
+
+<col sm="4">
+=== Netwerk ===
+| IP | {{ ansible_all_ipv4_addresses[0] }} |
+</col>
+</grid>
+
+
+----
+==== Server Changelog ====
+{{ server_changelog.content | b64decode }}
+
+  * ''Deze word gelezen vanaf de server zelf in /root/changelog.txt''
+
+
+----

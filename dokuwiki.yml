@@ -1,0 +1,66 @@
+---
+# This playbook documents all servers maintained by ansible
+
+- name: Debug playboek voor alle variabelen
+  hosts: all
+  tasks:
+  - name: Display all variables/facts known for a host
+    debug: msg="{{ hostvars[inventory_hostname].ansible_default_ipv4.address }} {{ hostvars[inventory_hostname]["ansible_fqdn"] }} {{ hostvars[inventory_hostname]["ansible_hostname"] }}"
+
+
+- hosts: all
+  tasks:
+    - name: Plaats template met alle servers
+      template:
+        src: dokuwiki_templates/description.txt.j2
+        dest: /root/description.txt
+        owner: root
+        group: root
+        force: no
+
+    - name: maak de description en changelog files aan
+      copy: content="" dest={{ item }} force=no
+      with_items:
+        - /root/changelog.txt
+        - /root/notes.txt
+
+    - name: slurp description
+      slurp: src=/root/description.txt
+      register: server_description
+
+    - name: slurp changelog
+      slurp: src=/root/changelog.txt
+      register: server_changelog
+
+    - name: slurp notes
+      slurp: src=/root/notes.txt
+      register: server_notes
+ 
+
+- hosts: monitor
+  tasks:
+    - name: maak de ka linux ansible directorys aan
+      file: path={{ item }} state=directory owner=dokuwiki group=dokuwiki mode=0775
+      with_items: 
+        - /home/dokuwiki/html/data/pages/serverlijst
+
+    - name: Plaats template met alle serverlinks
+      template:
+        src: dokuwiki_templates/serverlist.txt.j2
+        dest: /home/dokuwiki/html/data/pages/start.txt
+        owner: dokuwiki
+        group: dokuwiki
+
+- hosts: all
+  gather_facts: true
+  tasks:
+
+    - name: Plaats template met alle servers
+      template:
+        src: dokuwiki_templates/server.txt.j2
+        dest: /home/dokuwiki/html/data/pages/serverlijst/{{ inventory_hostname }}.txt
+        owner: dokuwiki
+        group: dokuwiki
+      delegate_to: monitor.familieroethof.nl
+
+  

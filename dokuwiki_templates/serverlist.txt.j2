@@ -1,0 +1,15 @@
+===== Linux Server lijst =====
+
+<sortable>
+^ Naam ^ IP ^ OS ^ Actieve Kernel ^ Laatste Kernel ^
+{% for host in groups['all']|sort %}
+| [[serverlijst:{{ hostvars[host]['inventory_hostname'] }}|{{ hostvars[host]['inventory_hostname'] }}]] | {{ hostvars[host]['ansible_all_ipv4_addresses'][0] }} | {{ hostvars[host]['ansible_distribution'] }} {{ hostvars[host]['ansible_distribution_version'] }} ({{ hostvars[host]['ansible_architecture'] }}) | {{ hostvars[host]['ansible_kernel'] }} | |
+{% endfor %}
+</sortable>
+
+----
+Deze lijst is gegenereerd door:
+<code>
+root@ansible:~/ cd ansible
+root@ansible:~/ansible# ansible-playbook playbooks/dokuwiki.yml</code>
+
