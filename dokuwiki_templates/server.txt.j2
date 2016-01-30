@@ -39,14 +39,46 @@
 === OS ===
 | OS | {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }} |
 | Kernel | {{ ansible_kernel }} |
+| SELinux | {{ ansible_selinux }} |
+| Package Manager | {{ ansible_pkg_mgr }} |
 </col>
 
 <col sm="4">
 === Netwerk ===
-| IP | {{ ansible_all_ipv4_addresses[0] }} |
+| Hostname | {{ ansible_hostname }} |
+| Domain | {{ ansible_domain }} |
+| FQDN | {{ ansible_fqdn }} |
 </col>
 </grid>
 
+<grid>
+<col sm="4">
+=== IPv4 Adressen ===
+{% for ip in ansible_all_ipv4_addresses %}
+| {{ ip }} |
+{% endfor %}
+</col>
+
+<col sm="4">
+=== IPv6 Adressen ===
+{% for ip in ansible_all_ipv6_addresses %}
+| {{ ip }} |
+{% endfor %}
+</col>
+</grid>
+
+
+<grid>
+<col sm="12">
+{% for iface_name in ansible_interfaces %}
+{{ iface_name }}
+{% endfor %}
+</col>
+</grid>
+
+{% for mount in ansible_mounts %}
+{{ mount }}
+{% endfor %}
 
 ----
 ==== Server Changelog ====
