@@ -36,3 +36,16 @@ This is the index file containing a list of all servers with links to the 'per s
 
 > - In our case, the destionation is start.txt.. please change it if you do NOT wish that you're dokuwiki index is overwritten.
 
+TODO
+------
+
+Obviously every project still has things that need to be fixed or new wishes.
+
+ - Some servers (clients of my work) don't have curl, therefore the index has an issue, need to fix that
+ - Need to build a filter for local addressess i.e. 127.* or fe80::
+ - Mountpoints json needs to be 'de jsonned' to table format
+ - Need to get network interfaces overview
+ - etc.
+
+If you have any need or request, please state so in the issue list.
+
