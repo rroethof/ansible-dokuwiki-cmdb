@@ -1,0 +1,8 @@
+---
+# variables for the dokuwiki cmdb playbook
+
+dokuwiki_user: dokuwiki
+dokuwiki_group: dokuwiki
+dokuwiki_directory: /home/dokuwiki/html/data/pages/serverlijst
+dokuwiki_serverlist_destination: /home/dokuwiki/html/data/pages/start.txt
+dokuwiki_targetserver: monitor.familieroethof.nl

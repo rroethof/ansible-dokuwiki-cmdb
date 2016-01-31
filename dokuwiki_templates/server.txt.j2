@@ -76,9 +76,20 @@
 </col>
 </grid>
 
+----
+<code>
 {% for mount in ansible_mounts %}
 {{ mount }}
 {% endfor %}
+</code>
+----
+<code>
+
+{% for device in ansible_devices %}
+{{ device }}
+{% endfor %}
+</code>
+----
 
 ----
 ==== Server Changelog ====

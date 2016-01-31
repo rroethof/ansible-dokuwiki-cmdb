@@ -3,12 +3,16 @@
 
 - name: Debug playboek voor alle variabelen
   hosts: all
+  vars_files:
+    - dokuwiki_vars.yml
   tasks:
   - name: Display all variables/facts known for a host
     debug: msg="{{ hostvars[inventory_hostname].ansible_default_ipv4.address }} {{ hostvars[inventory_hostname]["ansible_fqdn"] }} {{ hostvars[inventory_hostname]["ansible_hostname"] }}"
 
 
 - hosts: all
+  vars_files:
+    - dokuwiki_vars.yml
   tasks:
     - name: Plaats template met alle servers
       template:
@@ -19,7 +23,7 @@
         force: no
 
     - name: maak de description en changelog files aan
-      copy: content="" dest={{ item }} force=no
+      copy: content="" dest="{{ item }}" force=no
       with_items:
         - /root/changelog.txt
         - /root/notes.txt
@@ -37,30 +41,32 @@
       register: server_notes
  
 
-- hosts: monitor
+- hosts: "{{ dokuwiki_targetserver }}"
+  vars_files:
+    - dokuwiki_vars.yml
   tasks:
     - name: maak de ka linux ansible directorys aan
-      file: path={{ item }} state=directory owner=dokuwiki group=dokuwiki mode=0775
-      with_items: 
-        - /home/dokuwiki/html/data/pages/serverlijst
+      file: path="{{ dokuwiki_directory }}" state=directory owner="{{ dokuwiki_user }}" group="{{ dokuwiki_group }}" mode=0775
 
     - name: Plaats template met alle serverlinks
       template:
         src: dokuwiki_templates/serverlist.txt.j2
-        dest: /home/dokuwiki/html/data/pages/start.txt
-        owner: dokuwiki
-        group: dokuwiki
+        dest: "{{ dokuwiki_serverlist_destination }}"
+        owner: "{{ dokuwiki_user }}"
+        group: "{{ dokuwiki_group }}"
 
 - hosts: all
+  vars_files:
+    - dokuwiki_vars.yml
   gather_facts: true
   tasks:
 
     - name: Plaats template met alle servers
       template:
         src: dokuwiki_templates/server.txt.j2
-        dest: /home/dokuwiki/html/data/pages/serverlijst/{{ inventory_hostname }}.txt
-        owner: dokuwiki
-        group: dokuwiki
-      delegate_to: monitor.familieroethof.nl
+        dest: "{{ dokuwiki_directory }}/{{ inventory_hostname }}.txt"
+        owner: "{{ dokuwiki_user }}"
+        group: "{{ dokuwiki_group }}"
+      delegate_to: "{{ dokuwiki_targetserver }}"
 
   
