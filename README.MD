@@ -9,10 +9,31 @@ Workings
 -----------
 
 The templates in dokuwiki_templates are filled with ansible facts, combined with data gathered locally via <a href="http://docs.ansible.com/ansible/slurp_module.html" class="icon-link">slurp</a> from each system.
-The data on each system is:
- - /root/description.txt 
- - /root/notes.txt 
- - /root/changelog.txt
+The variables are:
+
+> - dokuwiki_user: dokuwiki
+>   This is the user that runs dokuwiki on your wiki server
+
+> - dokuwiki_group: dokuwiki
+>   This is the group that runs dokuwiki on your wiki server
+
+> - dokuwiki_local_destination: /root/.documentation
+>   The location of the local documentation on each server
+
+> - dokuwiki_local_destination_user: root
+>   The user of the documentation on each server
+
+> - dokuwiki_local_destination_group: root
+>   The user of the documentation on each server
+
+> - dokuwiki_directory: /home/dokuwiki/html/data/pages/serverlijst
+>   The directory of your dokuwiki data
+
+> - dokuwiki_serverlist_destination: /home/dokuwiki/html/data/pages/start.txt
+>   The inventory page location of your dokuwiki
+
+> - dokuwiki_targetserver: monitor.familieroethof.nl
+>   The dokuwiki server
 
 The playbook creates these files when they are not already on every server so people can manage these locally.
 
