@@ -1,54 +1,61 @@
 ---
 # This playbook documents all servers maintained by ansible
 
-- name: Debug playboek voor alle variabelen
+- name: Get Device Facts
   hosts: all
   vars_files:
     - dokuwiki_vars.yml
   tasks:
-  - name: Display all variables/facts known for a host
+
+### Caching facts
+  - name: Display all variables/facts known for each server
     debug: msg="{{ hostvars[inventory_hostname].ansible_default_ipv4.address }} {{ hostvars[inventory_hostname]["ansible_fqdn"] }} {{ hostvars[inventory_hostname]["ansible_hostname"] }}"
 
 
-- hosts: all
-  vars_files:
-    - dokuwiki_vars.yml
-  tasks:
-    - name: Plaats template met alle servers
-      template:
-        src: dokuwiki_templates/description.txt.j2
-        dest: /root/description.txt
-        owner: root
-        group: root
-        force: no
+### Documentation files
+  - name: Create the directorys for the description files on each server
+    file: path="{{ dokuwiki_local_destination }}" state=directory owner="{{ dokuwiki_local_destination_user }}" group="{{ dokuwiki_local_destination_group }}" mode=0775
 
-    - name: maak de description en changelog files aan
-      copy: content="" dest="{{ item }}" force=no
-      with_items:
-        - /root/changelog.txt
-        - /root/notes.txt
+  - name: Create the description file on each server
+    template:
+      src: dokuwiki_templates/description.txt.j2
+      dest: "{{ dokuwiki_local_destination }}/description.txt"
+      owner: root
+      group: root
+      force: no
 
-    - name: slurp description
-      slurp: src=/root/description.txt
-      register: server_description
+  - name: Download the description file
+    slurp: src="{{ dokuwiki_local_destination }}/description.txt"
+    register: server_description
 
-    - name: slurp changelog
-      slurp: src=/root/changelog.txt
-      register: server_changelog
+  - name: Create the changelog file on each server
+    copy: content="" dest="{{ item }}" force=no
+    with_items:
+      - "{{ dokuwiki_local_destination }}/changelog.txt"
 
-    - name: slurp notes
-      slurp: src=/root/notes.txt
-      register: server_notes
+  - name: Download the changelog file
+    slurp: src="{{ dokuwiki_local_destination }}/changelog.txt"
+    register: server_changelog
+
+  - name: Create the notes file on each server
+    copy: content="" dest="{{ item }}" force=no
+    with_items:
+      - "{{ dokuwiki_local_destination }}/notes.txt"
+
+  - name: Download the notes file
+    slurp: src="{{ dokuwiki_local_destination }}/notes.txt"
+    register: server_notes
  
 
+### Dokuwiki directory and file creation
 - hosts: "{{ dokuwiki_targetserver }}"
   vars_files:
     - dokuwiki_vars.yml
   tasks:
-    - name: maak de ka linux ansible directorys aan
+    - name: Create the directorys for dokuwiki
       file: path="{{ dokuwiki_directory }}" state=directory owner="{{ dokuwiki_user }}" group="{{ dokuwiki_group }}" mode=0775
 
-    - name: Plaats template met alle serverlinks
+    - name: Place the serverlist template
       template:
         src: dokuwiki_templates/serverlist.txt.j2
         dest: "{{ dokuwiki_serverlist_destination }}"
@@ -61,7 +68,7 @@
   gather_facts: true
   tasks:
 
-    - name: Plaats template met alle servers
+    - name: Place each server as a wikipage on {{ dokuwiki_targetserver }}:{{ dokuwiki_directory }}/
       template:
         src: dokuwiki_templates/server.txt.j2
         dest: "{{ dokuwiki_directory }}/{{ inventory_hostname }}.txt"

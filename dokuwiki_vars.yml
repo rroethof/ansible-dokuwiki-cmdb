@@ -3,6 +3,9 @@
 
 dokuwiki_user: dokuwiki
 dokuwiki_group: dokuwiki
+dokuwiki_local_destination: /root/.documentation
+dokuwiki_local_destination_user: root
+dokuwiki_local_destination_group: root
 dokuwiki_directory: /home/dokuwiki/html/data/pages/serverlijst
 dokuwiki_serverlist_destination: /home/dokuwiki/html/data/pages/start.txt
 dokuwiki_targetserver: monitor.familieroethof.nl

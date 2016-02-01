@@ -14,7 +14,7 @@
 <col sm="8">
 === Server Notities ===
 {% if server_notes.content != '' %}
-{{ server_description.notes | b64decode }}
+{{ server_notes.content | b64decode }}
 {% else %}
   * ''Deze word gelezen vanaf de server zelf in /root/notes.txt''
 {% endif %}
